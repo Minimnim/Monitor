@@ -1,0 +1,22 @@
+function [bp1, bp2, bp3, bp4, bp5] = bpfiltn(sat)
+band1 = 0.005
+[z p k] = butter(12, band1 ,'low')
+[sos, g] = zp2sos(z,p,k)
+bp1 = filtfilt(sos,g,sat) 
+band2 = [0.005 0.01]
+[z p k] = butter(6, band2 ,'bandpass')
+[sos, g] = zp2sos(z,p,k)
+bp2 = filtfilt(sos,g,sat) 
+band3 = [0.01 0.021]
+[z p k] = butter(6, band3 ,'bandpass')
+[sos, g] = zp2sos(z,p,k)
+bp3 = filtfilt(sos,g,sat) 
+band4 = [0.021 0.042]
+[z p k] = butter(6, band4 ,'bandpass')
+[sos, g] = zp2sos(z,p,k)
+bp4 = filtfilt(sos,g,sat) 
+band5 = [0.042 0.083]
+[z p k] = butter(6, band5 ,'bandpass')
+[sos, g] = zp2sos(z,p,k)
+bp5 = filtfilt(sos,g,sat) 
+end
