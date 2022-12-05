@@ -2,7 +2,7 @@
 %S = dir(fullfile(P,'*.txt')); 
 PP = 'C:\Users\PhysioUser\Desktop\PhD\Monitor\Minoo\pre-processed signals\NIRS containing transients\mydata';
 SS = dir(fullfile(PP,'*.txt')); 
-for k = 61 %65:numel(SS)
+for k = 1:numel(SS)
     clear table
     clear mydata
     %F = fullfile(P,S(k).name);
