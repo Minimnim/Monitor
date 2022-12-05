@@ -106,3 +106,32 @@ Using different parameters, but the same code and files, still the AUC was signi
 knitr::kable(monitor_prob_auc[61,5], digits =  4, 
              caption = "The AUC for transients with HIE outcome")
 ```
+
+## NIRS signal containing tarnsients
+### Extracting features
+the nirs_feature_extraction.m file has been used to decompose the signal into 5 bandwidths, divide them into epochs of 4 hours with 2 hours of overlapping and extract the features from each epoch in each bandwidth of the NIRS signal that still contains transients. The outcome is saved as nirs_features_MN. The extracted features are: 
+
+- mean envelope (*5)
+- standard deviation envelope (*5)
+- signal kurtosis (*5)
+- signal skewness (*5)
+- 5th percentile of envelope (*5)
+- 95th percentile of envelope (*5)
+- mean instantaneous frequency (*5)
+- standard deviation instantaneous frequency (*5)
+- kurtosis instantaneous frequency (*5)
+- skewness instantaneous frequency (*5)
+- 5th percentile instantaneous frequency (*5)
+- 95th percentile instantaneous frequency (*5)
+- fractal dimension (*5)
+- the energy of signal in 5th percentile of the signal duration
+- the energy of signal in 95th percentile of the signal duration
+
+This gives us 67 features in total, but we will not include the energy of the signal in the 5th and 95th percentile of the signal duration. 
+
+my_code_put_together_allfeatures.m has been used to gather all the features extracted from transients in a single .csv file called all_nirs_features.csv.
+
+### Optimization for NIRS xgboost parameters_MRI
+Same as what was explained in *optimization for xgboost parameters_MRI*, we had 62 files at the end.Since each NIRS recording has different duration, we had different number of epochs for each infant. the colab friendly file containing the info for these 62 files is saved as *nirs with MRI outcome for xgb*. it is a 1505*66 matrix. The first column contains the IDs and columns 2-66 correspond to the 65 features for each epoch. The outcome is saved as MRI outcome for xgb_nirs.csv.
+
+Then a leave-one-out method optimization has been done to find the best values for xgboost method. the python code used is optimization.IPYNB. MRI outcome for xgb_58ver.csv has been used for getting AUC. The optimized values are:
