@@ -1,16 +1,18 @@
 %to upload the file with probabilities and outcome
 all = readtable("Monitor_probabilities_AUC.xlsx")
 data = table2array(all)
-outcome = readtable("MRI outcome for xgb_58ver.csv")
+%outcome = readtable("MRI outcome for xgb_58ver.csv")
 %outcome = readtable("HIE outcome for xgb_60ver.csv")
+outcome = readtable("gray injury outcome for xgb_58ver.csv")
 outcome = table2array(outcome)
-mri = outcome(:,2)
+%mri = outcome(:,2)
 %hie = outcome(:,2)
+gray = outcome(:,2)
 %to have AUC and 95% confidence interval
-a = data(1:60,7) %since it has NaN values, before going further, we have to delete them 
+a = data(1:60,18) %since it has NaN values, before going further, we have to delete them 
 a(29,:) = []
 a(39,:) = []
-[aauc,aauc_ci]=bootstrap_aucs(a,mri)
+[aauc,aauc_ci]=bootstrap_aucs(a,gray)
 %to have specificity and sensitivity 
 thresh = 0.5
 b = zeros(58,1)
@@ -21,7 +23,7 @@ for x = 1:58
         b(x,:) = 0
     end
 end 
-C = confusionmat(mri,b)
+C = confusionmat(gray,b)
 TP = C(2, 2);
 TN = C(1, 1);
 FP = C(1, 2);

@@ -17,10 +17,10 @@ Then transient_extraction.m has been used to extract the transients and saved fi
 
 ## Transients
 ### Extracting features
-the transient_feature_extraction.m file has been used to extract the features from the transients. The outcome is saved as transient_features_MN. The code transient_feature_extraction_below63.m is used to calculate the time rcSO2 signal is spending below 63%, and transient_features_extraction_below63_transient.m has been used to calculate the time transient signal is spending below 63%. calculating_nirs_duration.m has been used to have the duration of NIRS in each participant. my_code_put_together_allfeatures.m has been used to gather all the features extracted from transients in a single .csv file called all.csv.
+the transient_feature_extraction.m file has been used to extract the features from the transients. The outcome is saved as transient_features_MN. The code transient_feature_extraction_below63.m is used to calculate the time rcSO2 signal is spending below 63%, and transient_features_extraction_below63_transient.m has been used to calculate the time transient signal is spending below 63%. calculating_nirs_duration.m has been used to have the duration of NIRS in each participant. my_code_put_together_allfeatures.m has been used to gather all the features extracted from transients in a single .csv file called all_transient_features.csv.
 
 ```{r all_feature, echo=FALSE, include=FALSE}
-transient_all <- readxl::read_excel("all.xlsx")
+transient_all <- readxl::read_excel("all_transient_features.xlsx")
 
 ```
 
@@ -70,6 +70,22 @@ knitr::kable(monitor_prob_auc[61:65,c(1,3)], digits =  4,
              caption = "The AUC for transients with MRI outcome")
 ```
 
+### MRI watershed outcome
+We used the same parameters as MRI, the files transient for xgb_MRI.csv, watershed outcome for xgb.58ver.csv, and transient_xgboost.IPYNB, and the AUC was:
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(monitor_prob_auc[61:65,c(1,14)], digits =  4, 
+             caption = "The AUC for transients with MRI_watershed outcome")
+```
+
+### MRI gray injury outcome
+We used the same parameters as MRI, the files transient for xgb_MRI.csv, gray injury outcome for xgb.58ver.csv, and transient_xgboost.IPYNB, and the AUC was:
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(monitor_prob_auc[61:65,c(1,15)], digits =  4, 
+             caption = "The AUC for transients with MRI_watershed outcome")
+```
+
 ### Optimization for xgboost parameters_HIE
 61 infants were recruited and NIRS was measured for them, when the NIRS had been pre-processed, because some files had to be separated to two, we had 65 files. MN0052 was excluded since he had the diagnosis of sepsis, and we could not say for definite that HIE was the cause of their encephalopathy. MN0030 and MN0041 were mild that had been cooled, and were included in the HIE group with non-injury label. For HIE outcome, we have 60 infants in total, some files are separated,so we have 64 files, but at the end the features are added and averaged for babies with more than one file and we have 60 rows at the end. 
 
@@ -107,6 +123,30 @@ knitr::kable(monitor_prob_auc[61:65,c(1,5)], digits =  4,
              caption = "The AUC for transients with HIE outcome")
 ```
 
+In the next level, we were wondering if the features extracted from the transients could predict the HIE level, so we used the same files, just in the HIE outcome for xgb_60ver, instead of column 2, we used the HIE levels in column 3. for optimization and training the model, we used multiclass_xgboost.ipynb python file. The optimized parameters are: 
+
+```{r, echo=FALSE, include=FALSE}
+HIE_level_optimization <- readxl::read_excel("optimization_transient_HIE_grading.xlsx")
+
+```
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(HIE_level_optimization[3,], digits =  4, 
+             caption = "The optimized parameters for XGBoost with HIE grading outcome")
+```
+
+Then, using the R code called "multiclass_auc&ci", and the probabilities saved in the file multiclass_prob.xlsx, we calculated the AUC and 95% confidence interval. 
+
+```{r, echo=FALSE, include=FALSE}
+multiclass <- readxl::read_excel("Monitor_probabilities_AUC.xlsx", sheet = "multiclass")
+
+```
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(multiclass[1:3, c(1,2)], digits =  4, 
+             caption = "The AUC and 95% CI for transient with HIE grading outcome")
+```
+
 ## NIRS signal containing tarnsients
 ### Extracting features
 the nirs_feature_extraction.m file has been used to decompose the signal into 5 bandwidths, divide them into epochs of 4 hours with 2 hours of overlapping and extract the features from each epoch in each bandwidth of the NIRS signal that still contains transients. The outcome is saved as nirs_features_MN. The extracted features are: 
@@ -129,7 +169,7 @@ the nirs_feature_extraction.m file has been used to decompose the signal into 5 
 
 This gives us 67 features in total, but we will not include the energy of the signal in the 5th and 95th percentile of the signal duration. 
 
-my_code_put_together_allfeatures.m has been used to gather all the features extracted from transients in a single .csv file called all_nirs_features.csv.
+my_code_put_together_allfeatures_nirs.m has been used to gather all the features extracted from NIRS in a single .csv file called all_nirs_features.csv.
 
 ### Optimization for NIRS xgboost parameters_MRI
 Same as what was explained in *optimization for xgboost parameters_MRI*, we had 62 files at the end.Since each NIRS recording has different duration, we had different number of epochs for each infant. the colab friendly file containing the info for these 62 files is saved as *nirs with MRI outcome for xgb*. it is a 1505*66 matrix. The first column contains the IDs and columns 2-66 correspond to the 65 features for each epoch. The outcome is saved as MRI outcome for xgb_nirs.csv.
@@ -183,7 +223,7 @@ knitr::kable(HIE_optimization_nirs[4,], digits =  4,
              caption = "The optimized parameters for XGBoost with HIE outcome in nirs")
 ```
 
-### leave one out xgboost_MRI_NIRS
+### leave one out xgboost_HIE_NIRS
 The code called transient_xgboost.IPYNB is used for the leave one out xgboost method.the files used for this purpose are nirs with HIE outcome for xgb.csv, HIE outcome for xgb_nirs.csv and HIE outcome for xgb_60ver.csv (the last one used for getting AUC). The AUC is significant: 
 
 ```{r, echo=FALSE, include=TRUE}
@@ -207,4 +247,62 @@ knitr::kable(monitor_prob_auc[61:65,c(1,9)], digits =  4,
 
 ## Filtered NIRS signal
 ### Extracting features
-the nirs_feature_extraction.m file has been used to decompose the signal into 5 bandwidths, divide them into epochs of 4 hours with 2 hours of overlapping and extract the features from each epoch in each bandwidth of the Filtered signal. The outcome is saved as filtered_features_MN.txt. The extracted features same as extracted features from the NIRS signals containing transients. 
+the nirs_feature_extraction.m file has been used to decompose the signal into 5 bandwidths, divide them into epochs of 4 hours with 2 hours of overlapping and extract the features from each epoch in each bandwidth of the Filtered signal. The outcome is saved as filtered_features_MN.txt. The extracted features same as extracted features from the NIRS signals containing transients. The code my_code_put_together_allfeatures_nirs.m has been used to put all the features in a single file called all_filtered_features.csv. 
+
+### Leave one out xgboost_MRI_filtered
+The same parameters used for the NIRS file will be used for training these signals, so we have used these set of parameters: 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(MRI_optimization_nirs[3,], digits =  4, 
+             caption = "The optimized parameters for XGBoost with MRI outcome in nirs")
+```
+
+and 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(MRI_optimization_nirs[10,], digits =  4, 
+             caption = "The optimized parameters for XGBoost with MRI outcome in NIRS")
+```
+
+for the MRI outcome, and using the same code transient_xgboost.IPYNB, and the files called filtered with MRI outcome for xgb.csv, MRI outcome for xgb_nirs.csv and MRI outcome for xgb_58ver.csv have been used for training and testing the model, and this is the result: 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(monitor_prob_auc[61:65,c(1,10)], digits =  4, 
+             caption = "The AUC for Filtered with MRI outcome")
+```
+
+and 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(monitor_prob_auc[61:65,c(1,11)], digits =  4, 
+             caption = "The AUC for Filtered with MRI outcome")
+```
+
+### Leave one out xgboost_HIE_filtered
+The same parameters used for the NIRS file will be used for training these signals, so we have used these set of parameters: 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(HIE_optimization_nirs[4,], digits =  4, 
+             caption = "The optimized parameters for XGBoost with HIE outcome in nirs")
+```
+
+and 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(HIE_optimization_nirs[25,], digits =  4, 
+             caption = "The optimized parameters for XGBoost with HIE outcome in NIRS")
+```
+
+for the HIE outcome, and using the same code transient_xgboost.IPYNB, and the files called filtered with HIE outcome for xgb.csv, HIE outcome for xgb_nirs.csv and HIE outcome for xgb_60ver.csv have been used for training and testing the model, and this is the result: 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(monitor_prob_auc[61:65,c(1,12)], digits =  4, 
+             caption = "The AUC for Filtered with HIE outcome")
+```
+
+and 
+
+```{r, echo=FALSE, include=TRUE}
+knitr::kable(monitor_prob_auc[61:65,c(1,13)], digits =  4, 
+             caption = "The AUC for Filtered with HIE outcome")
+```
