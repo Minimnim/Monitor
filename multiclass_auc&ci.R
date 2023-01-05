@@ -2,7 +2,7 @@ install.packages('multiROC')
 library('multiROC')
 library('readxl')
 data <- read_excel("multiclass_prob.xlsx")
-df <- c(data[1:3], data[19:21])
+df <- c(data[1:3], data[28:30])
 df <-  as.data.frame(do.call(cbind, df))
 roc_test <- multi_roc(df, force_diag = TRUE)
 roc_test$AUC
