@@ -1,0 +1,19 @@
+pip3 list # view list of installed packeges
+pip3 install packagename --> because I am using python 3
+sudo apt install appName(nvtop) #install app in linux
+source /home/ubuntu/Minoo/bin/activate --> instead of conda it has changed to ubunto itself; for source activate I should be in the Minoo/bin; but for running the code, I should be in the folder that I have the file
+cd ../.. --> each .. goes one folder back
+pwd --> shows the directory path
+nvidia-smi
+---------------------------------------------------------------------
+tmux kill-session -t 0
+tmux ls
+tmux detach-client  -s 2
+tmux attach-session -t 2
+tmux new -s nameoffile
+---------------------------------------------------------------------
+tensorboard --logdir=./logs
+---------------------------------------------------------------------
+nvidia-smi
+export CUDA_HOME=/ubuntu/local/cuda-12
+----------------------------------------------------------------------

@@ -31,5 +31,14 @@ FN = C(2, 1);
 Accuracy = (TP + TN) / (TP + TN + FP + FN)
 Sensitivity = TP / (FN + TP)
 specificity = TN / (TN + FP)
+mcc = (TP * TN - FP * FN) / sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN));
 aauc
 aauc_ci
+% for plotting the AUC curve
+%[X,Y,T,AUC] = perfcurve(hie, data(:,6), 1);
+%plot(X, Y);
+% for finding the best cut-off for MCC
+%z = 1-X
+%p = z + Y -1 and then find the max p, then look at the index, and then use
+%the index to find the best sensitivity and specificty, change the
+%threshold till you have that values
