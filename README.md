@@ -18,6 +18,6 @@ NIRS is a non-invasive optical technique used to monitor tissue oxygenation. Thi
 ## Contact
 For any questions or suggestions, feel free to contact:
 
-Your Name - min.ashoori@gmail.com
+Minoo Ashoori - min.ashoori@gmail.com
 
 GitHub: Minimnim
